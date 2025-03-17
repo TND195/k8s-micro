@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: api-gateway
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+
+      containers:
+        - name: api-gateway
+          image: zun199x/d-gateway-service:v1
+          imagePullPolicy: Always
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "200m" # Yêu cầu tối thiểu 0.2 CPU
+              memory: "256Mi" # Yêu cầu tối thiểu 256MB RAM
+            limits:
+              cpu: "500m" # Giới hạn tối đa 0.5 CPU
+              memory: "512Mi" # Giới hạn tối đa 512MB RAM
+          env:
+            - name: AUTH_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: m-config
+                  key: auth-service-url
+            - name: USER_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: m-config
+                  key: user-service-url
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: m-secret
+                  key: jwt-secret
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: m-secret
+                  key: internal-secret
+          ports:
+            - containerPort: 80
+
+---
+# API Gateway Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: api-gateway
+

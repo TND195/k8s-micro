@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: m-config
+data:
+  mysql-host: "m-mysql"
+  mysql-port: "3306"
+  auth-service-url: "auth-service:8081"
+  user-service-url: "user-service:8082"

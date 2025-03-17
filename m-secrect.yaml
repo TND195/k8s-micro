@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: m-secret
+type: Opaque
+data:
+  mysql-root-password: cm9vdHBhc3N3b3Jk
+  mysql-user: dXNlcg==
+  mysql-password: cGFzc3dvcmQ=
+  jwt-secret: eW91cmF2ZXJ5YWxvbmdhc2VjcmV0YWtleWF3aXRoYWF0YWxlYXN0YTMyYWNoYXJz
+  internal-secret: eW91cmF2ZXJ5YWxvbmdhc2VjcmV0YWtleWF3aXRoYWF0YWxlYXN0YTMyYWNoYXJz

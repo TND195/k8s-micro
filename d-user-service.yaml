@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: zun199x/d-user-service:lasted
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          env:
+            - name: MYSQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: m-config
+                  key: mysql-host
+            - name: MYSQL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: mysql-port
+                  name: m-config
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: mysql-user
+                  name: m-secret
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: mysql-password
+                  name: m-secret
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: m-secret
+                  key: internal-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  ports:
+    - port: 8082
+      targetPort: 8082
+  selector:
+    app: user-service
+
+
