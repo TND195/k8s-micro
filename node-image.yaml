@@ -31,4 +31,5 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 3000
+    nodePort: 30001  # Cổng NodePort cụ thể, bạn có thể thay đổi trong phạm vi 30000-32767
   type: NodePort
